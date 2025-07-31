@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Task List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">📝 Your Tasks</h2>
+
+    <!-- Status Filter Buttons -->
+    <div class="btn-group mb-3" role="group" aria-label="Filter tasks by status">
+        <a href="{% url 'task_list' %}" class="btn btn-outline-primary">All</a>
+        <a href="?status=not_started" class="btn btn-outline-secondary">Not Started</a>
+        <a href="?status=in_progress" class="btn btn-outline-warning">In Progress</a>
+        <a href="?status=completed" class="btn btn-outline-success">Completed</a>
+    </div>
+
+    <!-- Context Filter Buttons -->
+    <div class="btn-group mb-4" role="group" aria-label="Filter tasks by context">
+        <a href="{% url 'task_list' %}" class="btn btn-outline-dark">All Contexts</a>
+        <a href="?context_tag=morning" class="btn btn-outline-info">After Breakfast</a>
+        <a href="?context_tag=commute" class="btn btn-outline-primary">During Commute</a>
+        <a href="?context_tag=evening" class="btn btn-outline-secondary">Before Bed</a>
+    </div>
+
+    {% if tasks %}
+    <ul class="list-group">
+        {% for task in tasks %}
+        <li class="list-group-item list-group-item-action mb-3 border rounded shadow-sm">
+            <strong>{{ task.title }}</strong> - {{ task.get_status_display }}
+            {% if task.context_tag %}
+              <em class="text-muted">({{ task.get_context_tag_display }})</em>
+            {% endif %}
+            <br>
+            {{ task.description }}
+            <div class="mt-2">
+                <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-outline-primary me-2">✏️ Edit</a>
+                <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-outline-danger me-2">🗑️ Delete</a>
+                <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary">🏠 Home</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No tasks yet. Ready to <a href="{% url 'task_form' %}">create your first task</a>?
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
