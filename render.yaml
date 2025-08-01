@@ -1,11 +1,17 @@
 services:
   - type: web
-    name: django-task-manager
-    runtime: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn personal_task_management.wsgi:application"
+    name: personal-task-management
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn personal_task_management.wsgi
+    autoDeploy: true
     envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: personal_task_management.settings
-      - key: PYTHON_VERSION
-        value: "3.11"
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        value: adminpassword
+    postDeploy:
+      - python manage.py migrate
+      - python manage.py createsuperuser --noinput || true
