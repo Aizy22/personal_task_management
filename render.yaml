@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: django-task-manager
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn personal_task_management.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: personal_task_management.settings
+      - key: PYTHON_VERSION
+        value: "3.11"
